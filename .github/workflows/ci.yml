@@ -1,0 +1,36 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -q scipy numpy
+      - name: syntax check
+        run: python -m py_compile src/fit_hours.py
+      - name: unit test mixture fit (no network)
+        run: |
+          python - <<'PY'
+import importlib.util, pathlib
+spec = importlib.util.spec_from_file_location('fit', 'src/fit_hours.py')
+fit = importlib.util.module_from_spec(spec); spec.loader.exec_module(fit)
+import numpy as np
+# pure CN histogram -> CN weight ~1
+w = fit.fit(fit.TEMPLATES['CN']*1000)
+assert w['CN'] > 0.9, w
+# pure US histogram -> US weight ~1
+w = fit.fit(fit.TEMPLATES['US']*1000)
+assert w['US'] > 0.9, w
+# 50/50 CN+US mixture
+w = fit.fit(fit.TEMPLATES['CN']*500 + fit.TEMPLATES['US']*500)
+assert 0.4 < w['CN'] < 0.6 and 0.4 < w['US'] < 0.6, w
+print('fit_hours.py: OK', w)
+PY
