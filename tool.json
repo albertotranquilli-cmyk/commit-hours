@@ -1,8 +1,8 @@
 {
   "id": "commit-hours",
   "schema": 1,
-  "status": "module_only",
-  "purpose": "Fit aggregate hour-of-week histograms to timezone work-hour templates",
+  "status": "scaffold_only",
+  "purpose": "Experimental aggregate hour-of-week mixture scaffold; not a validated inference capability",
   "entrypoints": {
     "selftest": "python src/fit_hours.py"
   },
