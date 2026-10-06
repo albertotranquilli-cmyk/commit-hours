@@ -1,0 +1,25 @@
+{
+  "id": "commit-hours",
+  "schema": 1,
+  "status": "module_only",
+  "purpose": "Fit aggregate hour-of-week histograms to timezone work-hour templates",
+  "entrypoints": {
+    "selftest": "python src/fit_hours.py"
+  },
+  "machine_outputs": [],
+  "network": {
+    "selftest": false
+  },
+  "agent_contract": {
+    "safe_autonomous": [
+      "selftest"
+    ],
+    "human_gate": [
+      "promote_to_capability"
+    ],
+    "forbidden": [
+      "individual_geolocation",
+      "treat_timezone_weight_as_identity"
+    ]
+  }
+}
